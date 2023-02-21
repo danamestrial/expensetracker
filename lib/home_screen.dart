@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,12 +23,13 @@ class HomeScreenState extends State<HomeScreen> {
                   children: [
                     const Text(
                       "Spent this Month",
+                      style: TextStyle(fontSize: 18, color: Colors.grey),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "${total.truncate()}", style: const TextStyle(fontSize: 60),
+                          "${total.truncate()}", style: const TextStyle(fontSize: 65),
                         ),
                         Column(
                           children: [
@@ -50,7 +49,7 @@ class HomeScreenState extends State<HomeScreen> {
               margin: const EdgeInsets.only(bottom: 60),
               child: TextButton.icon(
                 onPressed: () {
-                  // Respond to button press
+                  Navigator.pushNamed(context, '/add');
                 },
                 style: ButtonStyle(
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
