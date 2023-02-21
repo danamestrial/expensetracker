@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:numeric_keyboard/numeric_keyboard.dart';
+import 'package:string_validator/string_validator.dart';
 
 class AddScreen extends StatefulWidget {
   const AddScreen({Key? key}) : super(key: key);
@@ -9,11 +10,15 @@ class AddScreen extends StatefulWidget {
 }
 
 class AddScreenState extends State<AddScreen> {
+
+  String total = "0";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Container(
               margin: const EdgeInsets.only(top: 140, bottom: 60),
@@ -27,21 +32,10 @@ class AddScreenState extends State<AddScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("THB", style: TextStyle(fontSize: 20)),
-                          SizedBox(width: 10),
-                          IntrinsicWidth(
-                              child:
-                            TextFormField(
-                              autofocus: true,
-                              style: const TextStyle(fontSize: 65),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.allow(RegExp(r'[0-9]+[.]{0,1}[0-9]*')),
-                                TextInputFormatter.withFunction(
-                                      (oldValue, newValue) => newValue.copyWith(),
-                                ),
-                              ],
-                            )
+                          const Text("THB", style: TextStyle(fontSize: 20)),
+                          const SizedBox(width: 10),
+                          Text(
+                            "$total", style: const TextStyle(fontSize: 65),
                           ),
                         ],
                       ),
@@ -67,9 +61,38 @@ class AddScreenState extends State<AddScreen> {
                 label: Text("ADD EXPENSES", style: TextStyle(fontSize: 25),),
               ),
             ),
+            NumericKeyboard(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                leftIcon: const Icon(Icons.noise_control_off, size: 18),
+                rightIcon: const Icon(Icons.backspace, color: Colors.black,),
+                leftButtonFn: _onLeftIconTap,
+                rightButtonFn: _onRightIconTap,
+                textColor: Colors.black,
+                onKeyboardTap: _onKeyboardTap,
+            ),
           ],
         ),
       ),
     );
+  }
+
+  _onKeyboardTap(String value) {
+    setState(() {
+      total = isFloat(total + value) ? ltrim(total + value, '0') : total;
+    });
+  }
+
+  _onLeftIconTap() {
+    setState(() {
+      total = isFloat("$total.") ? "$total." : total;
+    });
+  }
+
+  _onRightIconTap() {
+    setState(() {
+      if(isLength(total, 1)) {
+        total = total.substring(0, total.length - 1);
+      }
+    });
   }
 }
