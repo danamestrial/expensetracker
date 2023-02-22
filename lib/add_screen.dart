@@ -61,14 +61,25 @@ class AddScreenState extends State<AddScreen> {
                 label: Text("ADD EXPENSES", style: TextStyle(fontSize: 25),),
               ),
             ),
-            NumericKeyboard(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                leftIcon: const Icon(Icons.noise_control_off, size: 18),
-                rightIcon: const Icon(Icons.backspace, color: Colors.black,),
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Yes"),
+                  Text("yes")
+                ],
+              ),
+            ),
+            IntrinsicHeight(
+              child: NumericKeyboard(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                leftIcon: const Icon(Icons.noise_control_off, size: 18, color: Colors.grey,),
+                rightIcon: const Icon(Icons.backspace, color: Colors.grey,),
                 leftButtonFn: _onLeftIconTap,
                 rightButtonFn: _onRightIconTap,
-                textColor: Colors.black,
+                textColor: Colors.grey,
                 onKeyboardTap: _onKeyboardTap,
+              ),
             ),
           ],
         ),
