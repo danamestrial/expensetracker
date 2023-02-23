@@ -20,7 +20,7 @@ class ListScreenState extends State<ListScreen> {
     SharedPreferences prefs = await _prefs;
     await prefs.setStringList('items', <String>[
       '{"name":"Hachiban", "price":"1000", "date":"1.1.20", "is_income":"true"}',
-      '{"name":"Food", "price":"8000", "date":"1.1.20", "is_income":"false"}',
+      '{"name":"Food", "price":"1000.5", "date":"1.1.20", "is_income":"false"}',
       '{"name":"Asset", "price":"1000", "date":"1.1.20", "is_income":"true"}'
     ]);
     List<String> get_list = prefs.getStringList('items') ?? [];
@@ -32,7 +32,8 @@ class ListScreenState extends State<ListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double baseWidth = 370;
+    var padding = MediaQuery.of(context).padding;
+    double baseWidth = MediaQuery.of(context).size.width - padding.top - padding.bottom;
     double fem = MediaQuery.of(context).size.width / baseWidth;
     double ffem = fem * 0.96;
     return FutureBuilder(
