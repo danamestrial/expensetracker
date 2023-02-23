@@ -18,14 +18,13 @@ class ListScreenState extends State<ListScreen> {
 
   Future<void> init() async {
     SharedPreferences prefs = await _prefs;
-    await prefs.setStringList('items', <String>[
-      '{"name":"Hachiban", "price":"1000", "date":"1.1.20", "is_income":"true"}',
-      '{"name":"Food", "price":"1000.5", "date":"1.1.20", "is_income":"false"}',
-      '{"name":"Asset", "price":"1000", "date":"1.1.20", "is_income":"true"}'
-    ]);
-    List<String> get_list = prefs.getStringList('items') ?? [];
-    entries = get_list.map((x) => json.decode(x)).toList();
-    print(entries[0]['is_income'].runtimeType);
+    // await prefs.setStringList('items', <String>[
+    //   '{"name":"Hachiban", "price":"1000", "date":"1.1.20", "is_income":"true"}',
+    //   '{"name":"Food", "price":"1000.5", "date":"1.1.20", "is_income":"false"}',
+    //   '{"name":"Asset", "price":"1000", "date":"1.1.20", "is_income":"true"}'
+    // ]);
+    List<String> getList = prefs.getStringList('items') ?? [];
+    entries = getList.map((x) => json.decode(x)).toList();
   }
 
   String total = "0";
@@ -89,21 +88,44 @@ class ListScreenState extends State<ListScreen> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: Container(
-                          margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 2.12 * fem),
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              '${entries[index]['name']}\n',
-                              style: SafeGoogleFont(
-                                'Inter',
-                                fontSize: 14 * ffem,
-                                fontWeight: FontWeight.w400,
-                                height: 1.2125 * ffem / fem,
-                                color: Color(0xff757373),
-                              ),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Column(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(top: 8 * fem),
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  '${entries[index]['name']}\n',
+                                  style: SafeGoogleFont(
+                                    'Inter',
+                                    fontSize: 14 * ffem,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1 * ffem / fem,
+                                  ),
+                                ),
+                              )
                             ),
-                          )),
+                            Container(
+                              margin: EdgeInsets.only(bottom: 8 * fem),
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  '${entries[index]['description']}',
+                                  style: SafeGoogleFont(
+                                    'Inter',
+                                    fontSize: 14 * ffem,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1 * ffem / fem,
+                                    color: Color(0xff757373),
+                                  ),
+                                ),
+                              )
+                            )
+                          ],
+                        )
+                      ),
                     ),
                   ],
                 ),

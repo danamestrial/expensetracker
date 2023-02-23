@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/', // we can omit this (as it is by default anyway)
+      initialRoute: '/add', // we can omit this (as it is by default anyway)
       routes: {
         '/': (context) => const HomeScreen(),
         '/add': (context) => const AddScreen(),
