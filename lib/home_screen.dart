@@ -15,28 +15,45 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   late final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  int income = 0;
-
-  // List<dynamic> entries = <Map<String, dynamic>>[];
+  double baseIncome = 0;
+  double totalIncome = 0;
   double expenses = 0;
   double balance = 0;
 
   Future<void> init() async {
     SharedPreferences prefs = await _prefs;
-    // await prefs.setInt('income', 5000);
+    // prefs.clear();
+    if (prefs.getStringList('items') == null) {
+      await prefs.setStringList('items', <String>[
+        '{"name":"Food", "description":"Hachiban", "price":"1000", "date":"2023-02-24 16:50:00.000", "is_income":"true"}',
+        '{"name":"Food", "description":"Beef35", "price":"1000.5", "date":"2023-02-24 16:50:00.000", "is_income":"false"}',
+        '{"name":"TheGang", "description":"Salary", "price":"3000", "date":"2023-02-24 16:50:00.000", "is_income":"true"}'
+      ]);
+    }
+    if (prefs.getDouble('income') == null) {
+      await prefs.setDouble('income', 0);
+    }
+    baseIncome = (prefs.getDouble('income') ?? baseIncome);
     List<String> get_list = prefs.getStringList('items') ?? [];
     List<dynamic> entries = get_list.map((x) => json.decode(x)).toList();
-    income = entries
-        .map((i) => i['is_income'] == 'true' ? double.parse(i['price']) : 0)
-        .reduce((value, element) => value + element)
-        .toInt() + (prefs.getInt('income') ?? income);
+    totalIncome = entries
+            .map((i) => i['is_income'] == 'true' ? double.parse(i['price']) : 0)
+            .reduce((value, element) => value + element)
+            .toDouble() +
+        baseIncome;
     List<String> get_list2 = prefs.getStringList('items') ?? [];
     List<dynamic> entries2 = get_list2.map((x) => json.decode(x)).toList();
     expenses = entries2
         .map((e) => e['is_income'] == 'false' ? double.parse(e['price']) : 0)
         .reduce((value, element) => value + element)
         .toDouble();
-    balance = income - expenses;
+    balance = totalIncome - expenses;
+  }
+
+  Future<void> saveIncome(double value) async {
+    SharedPreferences prefs = await _prefs;
+    await prefs.setDouble('income', value);
+    await init();
   }
 
   @override
@@ -48,240 +65,306 @@ class HomeScreenState extends State<HomeScreen> {
     double ffem = fem * 0.96;
     return Scaffold(
         body: SafeArea(
-            child: Container(
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: Color(0xffa79696),
+      child: Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            color: Color(0xffa79696),
+          ),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Container(
+              padding: EdgeInsets.fromLTRB(18 * fem, 22 * fem, 21 * fem, 36 * fem),
+              width: double.infinity,
+              height: 351 * fem,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment(0.056, -0.853),
+                  end: Alignment(-0.043, 1.596),
+                  colors: <Color>[Color(0xfffff6e5), Color(0x00f7ecd7)],
+                  stops: <double>[0, 0.989],
                 ),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                  Container(
-                      padding: EdgeInsets.fromLTRB(18 * fem, 22 * fem, 21 * fem, 36 * fem),
-                      width: double.infinity,
-                      height: 351 * fem,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          begin: Alignment(0.056, -0.853),
-                          end: Alignment(-0.043, 1.596),
-                          colors: <Color>[Color(0xfffff6e5), Color(0x00f7ecd7)],
-                          stops: <double>[0, 0.989],
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(32 * fem),
+                  bottomLeft: Radius.circular(32 * fem),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                        icon: Image.asset(
+                          'assets/home-screen/images/add-mZr.png',
                         ),
-                        borderRadius: BorderRadius.only(
-                          bottomRight: Radius.circular(32 * fem),
-                          bottomLeft: Radius.circular(32 * fem),
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: IconButton(
-                              icon: Image.asset(
-                                'assets/home-screen/images/add-mZr.png',
+                        iconSize: 48 * fem,
+                        onPressed: () {
+                          Navigator.pushNamed(context, "/add");
+                        },
+                      )),
+                  FutureBuilder(
+                    future: init(),
+                    builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                      return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                        Container(
+                          margin: EdgeInsets.only(top: 19, bottom: 40),
+                          child: Center(
+                              child: Column(
+                            children: [
+                              const Text(
+                                "Balance",
+                                style: TextStyle(fontSize: 18, color: Colors.grey),
                               ),
-                              iconSize: 48 * fem,
-                              onPressed: () {
-                                Navigator.pushNamed(context, "/add");
-                              },
-                            )
-                          ),
-                          FutureBuilder(
-                            future: init(),
-                            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                              return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                                Container(
-                                  margin: EdgeInsets.only(top: 19, bottom: 40),
-                                  child: Center(
-                                      child: Column(
-                                        children: [
-                                          const Text(
-                                            "Balance",
-                                            style: TextStyle(fontSize: 18, color: Colors.grey),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "${balance.truncate()}",
+                                    textAlign: TextAlign.center,
+                                    style: SafeGoogleFont(
+                                      'Inter',
+                                      fontSize: 65 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2125 * ffem / fem,
+                                      color: Color(0xff161719),
+                                    ),
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        ".${(balance.remainder(1) * 100).toStringAsPrecision(2)}",
+                                        textAlign: TextAlign.center,
+                                        style: SafeGoogleFont(
+                                          'Inter',
+                                          fontSize: 25 * ffem,
+                                          fontWeight: FontWeight.w600,
+                                          height: 1.2125 * ffem / fem,
+                                          color: Color(0xff161719),
+                                        ),
+                                      ),
+                                      Text(
+                                        "THB",
+                                        style: SafeGoogleFont(
+                                          'Inter',
+                                          fontSize: 20 * ffem,
+                                          fontWeight: FontWeight.w600,
+                                          height: 1.2125 * ffem / fem,
+                                          color: Color(0xff161719),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )),
+                        ),
+                        //
+                        // == EXPENSES CONTAINER VVV
+                        //
+                        Container(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(30),
                                           ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                          title: Column(
                                             children: [
                                               Text(
-                                                "${balance.truncate()}",
+                                                'Set Base Income',
                                                 textAlign: TextAlign.center,
                                                 style: SafeGoogleFont(
                                                   'Inter',
-                                                  fontSize: 65 * ffem,
+                                                  fontSize: 20 * ffem,
                                                   fontWeight: FontWeight.w600,
                                                   height: 1.2125 * ffem / fem,
-                                                  color: Color(0xff161719),
                                                 ),
                                               ),
-                                              Column(
-                                                children: [
-                                                  Text(
-                                                    ".${(balance.remainder(1) * 100).toStringAsPrecision(2)}",
-                                                    textAlign: TextAlign.center,
-                                                    style: SafeGoogleFont(
-                                                      'Inter',
-                                                      fontSize: 25 * ffem,
-                                                      fontWeight: FontWeight.w600,
-                                                      height: 1.2125 * ffem / fem,
-                                                      color: Color(0xff161719),
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "THB",
-                                                    style: SafeGoogleFont(
-                                                      'Inter',
-                                                      fontSize: 20 * ffem,
-                                                      fontWeight: FontWeight.w600,
-                                                      height: 1.2125 * ffem / fem,
-                                                      color: Color(0xff161719),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
+                                              Text(
+                                                'current income: $baseIncome',
+                                                style: SafeGoogleFont(
+                                                  'Inter',
+                                                  fontSize: 18 * ffem,
+                                                  fontWeight: FontWeight.w400,
+                                                  height: 1.2125 * ffem / fem,
+                                                ),
+                                              )
                                             ],
                                           ),
-                                        ],
-                                      )),
-                                ),
-                                //
-                                // == EXPENSES CONTAINER VVV
-                                //
-                                Container(
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        height: baseWidth / 4.4,
-                                        width: baseWidth / 2.1,
-                                        child: Container(
-                                          margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 8 * fem, 1 * fem),
-                                          padding: EdgeInsets.fromLTRB(16 * fem, 17 * fem, 17 * fem, 15 * fem),
-                                          decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                              image: AssetImage(
-                                                'assets/home-screen/images/vector.png',
-                                              ),
+                                          content: TextFormField(
+                                            autofocus: true,
+                                            textAlign: TextAlign.center,
+                                            keyboardType: TextInputType.number,
+                                            style: SafeGoogleFont(
+                                              'Inter',
+                                              fontSize: 20 * ffem,
+                                              fontWeight: FontWeight.w300,
+                                              height: 1.2125 * ffem / fem,
                                             ),
+                                            onChanged: (String value) async {
+                                              print(value);
+                                              baseIncome = double.parse(value == '' ? '0' : value);
+                                            },
                                           ),
-                                          child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 11 * fem, 0 * fem),
-                                                width: 48 * fem,
-                                                height: 48 * fem,
-                                                child: Image.asset(
-                                                  'assets/home-screen/images/auto-group-rp43.png',
-                                                  width: 48 * fem,
-                                                  height: 48 * fem,
+                                          actions: <Widget>[
+                                            Align(
+                                              child: ElevatedButton(
+                                                onPressed: () async {
+                                                  await saveIncome(baseIncome).then((value) {
+                                                    Navigator.of(context).pop();
+                                                  });
+                                                },
+                                                child: const Text(
+                                                  'Save',
+                                                  style: TextStyle(fontSize: 24),
                                                 ),
                                               ),
+                                            )
+                                          ],
+                                        );
+                                      });
+                                },
+                                child: SizedBox(
+                                  height: baseWidth / 4.4,
+                                  width: baseWidth / 2.1,
+                                  child: Container(
+                                    margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 8 * fem, 1 * fem),
+                                    padding: EdgeInsets.fromLTRB(16 * fem, 17 * fem, 17 * fem, 15 * fem),
+                                    decoration: const BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage(
+                                          'assets/home-screen/images/vector.png',
+                                        ),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 11 * fem, 0 * fem),
+                                          width: 48 * fem,
+                                          height: 48 * fem,
+                                          child: Image.asset(
+                                            'assets/home-screen/images/auto-group-rp43.png',
+                                            width: 48 * fem,
+                                            height: 48 * fem,
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.fromLTRB(0 * fem, 5 * fem, 0 * fem, 0 * fem),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
                                               Container(
-                                                margin: EdgeInsets.fromLTRB(0 * fem, 3.82 * fem, 0 * fem, 0 * fem),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Container(
-                                                      margin: EdgeInsets.fromLTRB(0.12 * fem, 0 * fem, 0 * fem, 4.85 * fem),
-                                                      width: 47.34 * fem,
-                                                      height: 10.34 * fem,
-                                                      child: Image.asset(
-                                                        'assets/home-screen/images/vector-PDa.png',
-                                                        width: 47.34 * fem,
-                                                        height: 10.34 * fem,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      '$income',
-                                                      style: SafeGoogleFont(
-                                                        'Inter',
-                                                        fontSize: 20 * ffem,
-                                                        fontWeight: FontWeight.w600,
-                                                        height: 1.2125 * ffem / fem,
-                                                        color: Color(0xfffbfbfb),
-                                                      ),
-                                                    ),
-                                                  ],
+                                                margin: EdgeInsets.fromLTRB(0.12 * fem, 0 * fem, 0 * fem, 4.85 * fem),
+                                                width: 47.34 * fem,
+                                                height: 10.34 * fem,
+                                                child: Image.asset(
+                                                  'assets/home-screen/images/vector-PDa.png',
+                                                  width: 47.34 * fem,
+                                                  height: 10.34 * fem,
+                                                ),
+                                              ),
+                                              FittedBox(
+                                                fit: BoxFit.cover,
+                                                child: Text(
+                                                  '$totalIncome',
+                                                  style: SafeGoogleFont(
+                                                    'Inter',
+                                                    fontSize: 15 * ffem,
+                                                    fontWeight: FontWeight.w600,
+                                                    height: 1.2125 * ffem / fem,
+                                                    color: Color(0xfffbfbfb),
+                                                  ),
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: baseWidth / 4.4,
+                                width: baseWidth / 2.1,
+                                child: Container(
+                                  margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 8 * fem, 1 * fem),
+                                  padding: EdgeInsets.fromLTRB(16 * fem, 17 * fem, 17 * fem, 15 * fem),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xfffd3c4a),
+                                    borderRadius: BorderRadius.circular(28 * fem),
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 11 * fem, 0 * fem),
+                                        width: 48 * fem,
+                                        height: 48 * fem,
+                                        child: Image.asset(
+                                          'assets/home-screen/images/group-223-p4x.png',
+                                          width: 48 * fem,
+                                          height: 48 * fem,
+                                        ),
                                       ),
-                                      SizedBox(
-                                        height: baseWidth / 4.4,
-                                        width: baseWidth / 2.1,
-                                        child: Container(
-                                          margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 8 * fem, 1 * fem),
-                                          padding: EdgeInsets.fromLTRB(16 * fem, 17 * fem, 17 * fem, 15 * fem),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xfffd3c4a),
-                                            borderRadius: BorderRadius.circular(28 * fem),
-                                          ),
-                                          child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 11 * fem, 0 * fem),
-                                                width: 48 * fem,
-                                                height: 48 * fem,
-                                                child: Image.asset(
-                                                  'assets/home-screen/images/group-223-p4x.png',
-                                                  width: 48 * fem,
-                                                  height: 48 * fem,
+                                      Container(
+                                        margin: EdgeInsets.fromLTRB(0 * fem, 2 * fem, 0 * fem, 0 * fem),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              // expensesCAC (5:661)
+                                              margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 4 * fem),
+                                              child: Text(
+                                                'Expenses',
+                                                style: SafeGoogleFont(
+                                                  'Inter',
+                                                  fontSize: 14 * ffem,
+                                                  fontWeight: FontWeight.w500,
+                                                  height: 1.2125 * ffem / fem,
+                                                  color: Color(0xfffbfbfb),
                                                 ),
                                               ),
-                                              Container(
-                                                margin: EdgeInsets.fromLTRB(0 * fem, 2 * fem, 0 * fem, 0 * fem),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Container(
-                                                      // expensesCAC (5:661)
-                                                      margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 4 * fem),
-                                                      child: Text(
-                                                        'Expenses',
-                                                        style: SafeGoogleFont(
-                                                          'Inter',
-                                                          fontSize: 14 * ffem,
-                                                          fontWeight: FontWeight.w500,
-                                                          height: 1.2125 * ffem / fem,
-                                                          color: Color(0xfffbfbfb),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    FittedBox(
-                                                      fit: BoxFit.cover,
-                                                      child: Text(
-                                                        '$expenses',
-                                                        style: SafeGoogleFont(
-                                                          'Inter',
-                                                          fontSize: 15 * ffem,
-                                                          fontWeight: FontWeight.w600,
-                                                          height: 1.2125 * ffem / fem,
-                                                          color: Color(0xfffbfbfb),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
+                                            ),
+                                            FittedBox(
+                                              fit: BoxFit.cover,
+                                              child: Text(
+                                                '$expenses',
+                                                style: SafeGoogleFont(
+                                                  'Inter',
+                                                  fontSize: 15 * ffem,
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.2125 * ffem / fem,
+                                                  color: Color(0xfffbfbfb),
                                                 ),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                              ]);
-                            },
-                          )
-                        ],
-                      ),
-                  ),
-                  ListScreen(),
-                ])
+                              ),
+                            ],
+                          ),
+                        ),
+                      ]);
+                    },
+                  )
+                ],
+              ),
             ),
-        )
-    );
+            ListScreen(),
+          ])),
+    ));
   }
 }
 

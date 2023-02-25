@@ -18,11 +18,6 @@ class ListScreenState extends State<ListScreen> {
 
   Future<void> init() async {
     SharedPreferences prefs = await _prefs;
-    // await prefs.setStringList('items', <String>[
-    //   '{"name":"Hachiban", "price":"1000", "date":"1.1.20", "is_income":"true"}',
-    //   '{"name":"Food", "price":"1000.5", "date":"1.1.20", "is_income":"false"}',
-    //   '{"name":"Asset", "price":"1000", "date":"1.1.20", "is_income":"true"}'
-    // ]);
     List<String> getList = prefs.getStringList('items') ?? [];
     entries = getList.map((x) => json.decode(x)).toList();
   }
@@ -65,26 +60,45 @@ class ListScreenState extends State<ListScreen> {
                         height: 41.12 * fem,
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 6.75 * fem, 0 * fem),
-                      width: 18 * fem,
-                      height: 18 * fem,
-                      child: Image.asset(
-                        'assets/home-screen/images/thailand-baht.png',
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 114 * fem, 0 * fem),
-                      child: Text(
-                        '${entries[index]['price']}',
-                        style: SafeGoogleFont(
-                          'Inter',
-                          fontSize: 22 * ffem,
-                          fontWeight: FontWeight.w400,
-                          height: 1.2125 * ffem / fem,
-                          color: Color(0xff000000),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 18 * fem,
+                              height: 18 * fem,
+                              child: Image.asset(
+                                'assets/home-screen/images/thailand-baht.png',
+                              ),
+                            ),
+                            Text(
+                              '${entries[index]['price']}',
+                              style: SafeGoogleFont(
+                                'Inter',
+                                fontSize: 22 * ffem,
+                                fontWeight: FontWeight.w400,
+                                height: 1.2125 * ffem / fem,
+                                color: Color(0xff000000),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
+                        Container(
+                          margin: EdgeInsets.only(top: 5 * fem),
+                          child: Text(
+                            '${DateTime.parse(entries[index]['date'])}',
+                            textAlign: TextAlign.left,
+                            style: SafeGoogleFont(
+                              'Inter',
+                              fontSize: 14 * ffem,
+                              fontWeight: FontWeight.w400,
+                              height: 1 * ffem / fem,
+                              color: Color(0xff757373),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                     Expanded(
                       flex: 1,
