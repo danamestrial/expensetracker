@@ -46,7 +46,6 @@ class AddScreenState extends State<AddScreen> {
     double baseWidth = MediaQuery.of(context).size.width - padding.top - padding.bottom;
     double fem = MediaQuery.of(context).size.width / baseWidth;
     double ffem = fem * 0.96;
-
     return Scaffold(
       body: SafeArea(
           child: SingleChildScrollView(

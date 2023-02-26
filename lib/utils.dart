@@ -95,3 +95,11 @@ Future<bool> reset({bool clear = false, bool debug = false}) async {
   }
   return true;
 }
+
+Future<bool> delete(int index) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<String> items = prefs.getStringList('items') ?? [];
+  items.removeAt(index);
+  await prefs.setStringList('items', items);
+  return true;
+}

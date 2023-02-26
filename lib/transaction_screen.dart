@@ -7,7 +7,6 @@ class TransactionScreen extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => TransactionScreenState();
-
 }
 
 class TransactionScreenState extends State<TransactionScreen> {
@@ -85,7 +84,7 @@ class TransactionScreenState extends State<TransactionScreen> {
                                     Align(
                                         child: ElevatedButton(
                                             onPressed: () async {
-                                              reset(clear: true).then((value) => {
+                                              reset(clear: true, debug: true).then((value) => {
                                                 Navigator.pushNamed(context, '/')
                                               });
                                             },
@@ -102,7 +101,7 @@ class TransactionScreenState extends State<TransactionScreen> {
                     ),
                   ],
                 ),
-                const ListScreen(),
+                ListScreen(update: (){setState(() {});}),
               ],
             ),
           )
