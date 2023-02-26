@@ -25,9 +25,8 @@ class HomeScreenState extends State<HomeScreen> {
     baseIncome = (prefs.getDouble('income') ?? baseIncome);
     List<String> getList = prefs.getStringList('items') ?? [];
     if (getList.isNotEmpty) {
-      List<String> getList2 = prefs.getStringList('items') ?? [];
-      List<dynamic> entries2 = getList2.map((x) => json.decode(x)).toList();
-      expenses = entries2
+      List<dynamic> entries = getList.map((x) => json.decode(x)).toList();
+      expenses = entries
           .map((e) => e['is_income'] == 'false' ? double.parse(e['price']) : double.parse("-${e['price']}"))
           .reduce((value, element) => value + element)
           .toDouble();
