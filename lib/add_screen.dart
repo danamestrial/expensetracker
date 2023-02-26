@@ -31,9 +31,9 @@ class AddScreenState extends State<AddScreen> {
       String strMap = json.encode(map.map((key, value) => MapEntry(key, value.toString())));
       // print(strMap);
       getList.insert(0, strMap);
-      await prefs.setStringList('items', getList);
-      print(getList);
-      Navigator.pushNamed(context, '/');
+      await prefs.setStringList('items', getList).then((value) => {
+        Navigator.pushNamed(context, '/')
+      });
       return true;
     } catch(e) {
       return false;
@@ -55,8 +55,8 @@ class AddScreenState extends State<AddScreen> {
                 padding: EdgeInsets.fromLTRB(0 * fem, 19 * fem, 0 * fem, 0 * fem),
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Color(0xffffffff),
-                  gradient: LinearGradient(
+                  color: const Color(0xffffffff),
+                  gradient: const LinearGradient(
                     begin: Alignment(0.056, -0.853),
                     end: Alignment(-0.043, 1.596),
                     colors: <Color>[Color(0xfffff6e5), Color(0x00f7ecd7)],
@@ -79,7 +79,7 @@ class AddScreenState extends State<AddScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.arrow_left),
+                            icon: const Icon(Icons.arrow_left),
                             onPressed: () {
                               Navigator.pushNamed(context, "/");
                             },
@@ -93,7 +93,7 @@ class AddScreenState extends State<AddScreen> {
                                 fontSize: 18 * ffem,
                                 fontWeight: FontWeight.w600,
                                 height: 1.2125 * ffem / fem,
-                                color: Color(0xff000000),
+                                color: const Color(0xff000000),
                               ),
                             ),
                           ),
@@ -109,7 +109,7 @@ class AddScreenState extends State<AddScreen> {
                           fontSize: 18 * ffem,
                           fontWeight: FontWeight.w600,
                           height: 1.2125 * ffem / fem,
-                          color: Color(0xff090000),
+                          color: const Color(0xff090000),
                         ),
                       ),
                     ),
@@ -163,7 +163,7 @@ class AddScreenState extends State<AddScreen> {
                       padding: EdgeInsets.fromLTRB(0 * fem, 42 * fem, 0 * fem, 40 * fem),
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: Color(0xfffcfcfc),
+                        color: const Color(0xfffcfcfc),
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(50 * fem),
                           topRight: Radius.circular(50 * fem),
@@ -180,8 +180,8 @@ class AddScreenState extends State<AddScreen> {
                             width: 330 * fem,
                             height: 57 * fem,
                             decoration: BoxDecoration(
-                              border: Border.all(color: Color(0xff25255c)),
-                              color: Color(0xffffffff),
+                              border: Border.all(color: const Color(0xff25255c)),
+                              color: const Color(0xffffffff),
                               borderRadius: BorderRadius.circular(16 * fem),
                             ),
                             child: Container(
@@ -218,8 +218,8 @@ class AddScreenState extends State<AddScreen> {
                             width: 332 * fem,
                             height: 57 * fem,
                             decoration: BoxDecoration(
-                              border: Border.all(color: Color(0xff262653)),
-                              color: Color(0xffffffff),
+                              border: Border.all(color: const Color(0xff262653)),
+                              color: const Color(0xffffffff),
                               borderRadius: BorderRadius.circular(16 * fem),
                             ),
                             child: Container(
@@ -264,8 +264,8 @@ class AddScreenState extends State<AddScreen> {
                             width: 332 * fem,
                             height: 120 * fem,
                             decoration: BoxDecoration(
-                              border: Border.all(color: Color(0xff25255c)),
-                              color: Color(0xffffffff),
+                              border: Border.all(color: const Color(0xff25255c)),
+                              color: const Color(0xffffffff),
                               borderRadius: BorderRadius.circular(16 * fem),
                             ),
                             child: CupertinoDatePicker(
@@ -291,7 +291,7 @@ class AddScreenState extends State<AddScreen> {
                         width: double.infinity,
                         height: 56 * fem,
                         decoration: BoxDecoration(
-                          color: Color(0xff7e3dff),
+                          color: const Color(0xff7e3dff),
                           borderRadius: BorderRadius.circular(16 * fem),
                         ),
                         child: Center(
@@ -303,7 +303,7 @@ class AddScreenState extends State<AddScreen> {
                               fontSize: 18 * ffem,
                               fontWeight: FontWeight.w600,
                               height: 1.2125 * ffem / fem,
-                              color: Color(0xfffbfbfb),
+                              color: const Color(0xfffbfbfb),
                             ),
                           ),
                         ),

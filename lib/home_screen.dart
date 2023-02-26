@@ -19,9 +19,13 @@ class HomeScreenState extends State<HomeScreen> {
   double balance = 0;
 
   Future<ListScreen> init() async {
+    SharedPreferences prefs = await _prefs;
+
+    if (prefs.getStringList('items') == null) {
+      await reset(clear: true, debug: false);
+    }
     await reset();
 
-    SharedPreferences prefs = await _prefs;
     baseIncome = (prefs.getDouble('income') ?? baseIncome);
     List<String> getList = prefs.getStringList('items') ?? [];
     if (getList.isNotEmpty) {
@@ -106,7 +110,7 @@ class HomeScreenState extends State<HomeScreen> {
                         ),
                         Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
                           Container(
-                            margin: EdgeInsets.only(top: 19, bottom: 40),
+                            margin: const EdgeInsets.only(top: 19, bottom: 40),
                             child: Center(
                                 child: Column(
                               children: [
@@ -125,7 +129,7 @@ class HomeScreenState extends State<HomeScreen> {
                                         fontSize: 65 * ffem,
                                         fontWeight: FontWeight.w600,
                                         height: 1.2125 * ffem / fem,
-                                        color: Color(0xff161719),
+                                        color: const Color(0xff161719),
                                       ),
                                     ),
                                     Column(
@@ -138,7 +142,7 @@ class HomeScreenState extends State<HomeScreen> {
                                             fontSize: 25 * ffem,
                                             fontWeight: FontWeight.w600,
                                             height: 1.2125 * ffem / fem,
-                                            color: Color(0xff161719),
+                                            color: const Color(0xff161719),
                                           ),
                                         ),
                                         Text(
@@ -148,7 +152,7 @@ class HomeScreenState extends State<HomeScreen> {
                                             fontSize: 20 * ffem,
                                             fontWeight: FontWeight.w600,
                                             height: 1.2125 * ffem / fem,
-                                            color: Color(0xff161719),
+                                            color: const Color(0xff161719),
                                           ),
                                         )
                                       ],
@@ -161,148 +165,87 @@ class HomeScreenState extends State<HomeScreen> {
                           //
                           // == EXPENSES CONTAINER VVV
                           //
-                          Container(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(30),
-                                            ),
-                                            title: Column(
-                                              children: [
-                                                Text(
-                                                  'Set Base Income',
-                                                  textAlign: TextAlign.center,
-                                                  style: SafeGoogleFont(
-                                                    'Inter',
-                                                    fontSize: 20 * ffem,
-                                                    fontWeight: FontWeight.w600,
-                                                    height: 1.2125 * ffem / fem,
-                                                  ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(30),
+                                          ),
+                                          title: Column(
+                                            children: [
+                                              Text(
+                                                'Set Base Income',
+                                                textAlign: TextAlign.center,
+                                                style: SafeGoogleFont(
+                                                  'Inter',
+                                                  fontSize: 20 * ffem,
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.2125 * ffem / fem,
                                                 ),
-                                                Text(
-                                                  'current income: $baseIncome',
-                                                  style: SafeGoogleFont(
-                                                    'Inter',
-                                                    fontSize: 18 * ffem,
-                                                    fontWeight: FontWeight.w400,
-                                                    height: 1.2125 * ffem / fem,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                            content: TextFormField(
-                                              autofocus: true,
-                                              textAlign: TextAlign.center,
-                                              keyboardType: TextInputType.number,
-                                              style: SafeGoogleFont(
-                                                'Inter',
-                                                fontSize: 20 * ffem,
-                                                fontWeight: FontWeight.w300,
-                                                height: 1.2125 * ffem / fem,
                                               ),
-                                              onChanged: (String value) async {
-                                                print(value);
-                                                baseIncome = double.parse(value == '' ? '0' : value);
-                                              },
-                                            ),
-                                            actions: <Widget>[
-                                              Align(
-                                                child: ElevatedButton(
-                                                  onPressed: () async {
-                                                    await saveIncome(baseIncome).then((value) {
-                                                      Navigator.of(context).pop();
-                                                    });
-                                                    setState(() {
-                                                    });
-                                                  },
-                                                  child: const Text(
-                                                    'Save',
-                                                    style: TextStyle(fontSize: 24),
-                                                  ),
+                                              Text(
+                                                'current income: $baseIncome',
+                                                style: SafeGoogleFont(
+                                                  'Inter',
+                                                  fontSize: 18 * ffem,
+                                                  fontWeight: FontWeight.w400,
+                                                  height: 1.2125 * ffem / fem,
                                                 ),
                                               )
                                             ],
-                                          );
-                                        });
-                                  },
-                                  child: SizedBox(
-                                    height: baseWidth / 4.4,
-                                    width: baseWidth / 2.1,
-                                    child: Container(
-                                      margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 8 * fem, 1 * fem),
-                                      padding: EdgeInsets.fromLTRB(16 * fem, 17 * fem, 17 * fem, 15 * fem),
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                            'assets/home-screen/images/vector.png',
                                           ),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 11 * fem, 0 * fem),
-                                            width: 48 * fem,
-                                            height: 48 * fem,
-                                            child: Image.asset(
-                                              'assets/home-screen/images/auto-group-rp43.png',
-                                              width: 48 * fem,
-                                              height: 48 * fem,
+                                          content: TextFormField(
+                                            autofocus: true,
+                                            textAlign: TextAlign.center,
+                                            keyboardType: TextInputType.number,
+                                            style: SafeGoogleFont(
+                                              'Inter',
+                                              fontSize: 20 * ffem,
+                                              fontWeight: FontWeight.w300,
+                                              height: 1.2125 * ffem / fem,
                                             ),
+                                            onChanged: (String value) async {
+                                              baseIncome = double.parse(value == '' ? '0' : value);
+                                            },
                                           ),
-                                          Container(
-                                            margin: EdgeInsets.fromLTRB(0 * fem, 5 * fem, 0 * fem, 0 * fem),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Container(
-                                                  margin: EdgeInsets.fromLTRB(0.12 * fem, 0 * fem, 0 * fem, 4.85 * fem),
-                                                  width: 47.34 * fem,
-                                                  height: 10.34 * fem,
-                                                  child: Image.asset(
-                                                    'assets/home-screen/images/vector-PDa.png',
-                                                    width: 47.34 * fem,
-                                                    height: 10.34 * fem,
-                                                  ),
+                                          actions: <Widget>[
+                                            Align(
+                                              child: ElevatedButton(
+                                                onPressed: () async {
+                                                  await saveIncome(baseIncome).then((value) {
+                                                    Navigator.of(context).pop();
+                                                  });
+                                                  setState(() {
+                                                  });
+                                                },
+                                                child: const Text(
+                                                  'Save',
+                                                  style: TextStyle(fontSize: 24),
                                                 ),
-                                                FittedBox(
-                                                  fit: BoxFit.cover,
-                                                  child: Text(
-                                                    '$baseIncome',
-                                                    style: SafeGoogleFont(
-                                                      'Inter',
-                                                      fontSize: 15 * ffem,
-                                                      fontWeight: FontWeight.w600,
-                                                      height: 1.2125 * ffem / fem,
-                                                      color: Color(0xfffbfbfb),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
+                                              ),
+                                            )
+                                          ],
+                                        );
+                                      });
+                                },
+                                child: SizedBox(
                                   height: baseWidth / 4.4,
                                   width: baseWidth / 2.1,
                                   child: Container(
                                     margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 8 * fem, 1 * fem),
                                     padding: EdgeInsets.fromLTRB(16 * fem, 17 * fem, 17 * fem, 15 * fem),
-                                    decoration: BoxDecoration(
-                                      color: Color(0xfffd3c4a),
-                                      borderRadius: BorderRadius.circular(28 * fem),
+                                    decoration: const BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage(
+                                          'assets/home-screen/images/vector.png',
+                                        ),
+                                      ),
                                     ),
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -312,40 +255,36 @@ class HomeScreenState extends State<HomeScreen> {
                                           width: 48 * fem,
                                           height: 48 * fem,
                                           child: Image.asset(
-                                            'assets/home-screen/images/group-223-p4x.png',
+                                            'assets/home-screen/images/auto-group-rp43.png',
                                             width: 48 * fem,
                                             height: 48 * fem,
                                           ),
                                         ),
                                         Container(
-                                          margin: EdgeInsets.fromLTRB(0 * fem, 2 * fem, 0 * fem, 0 * fem),
+                                          margin: EdgeInsets.fromLTRB(0 * fem, 5 * fem, 0 * fem, 0 * fem),
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Container(
-                                                // expensesCAC (5:661)
-                                                margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 4 * fem),
-                                                child: Text(
-                                                  'Expenses',
-                                                  style: SafeGoogleFont(
-                                                    'Inter',
-                                                    fontSize: 14 * ffem,
-                                                    fontWeight: FontWeight.w500,
-                                                    height: 1.2125 * ffem / fem,
-                                                    color: Color(0xfffbfbfb),
-                                                  ),
+                                                margin: EdgeInsets.fromLTRB(0.12 * fem, 0 * fem, 0 * fem, 4.85 * fem),
+                                                width: 47.34 * fem,
+                                                height: 10.34 * fem,
+                                                child: Image.asset(
+                                                  'assets/home-screen/images/vector-PDa.png',
+                                                  width: 47.34 * fem,
+                                                  height: 10.34 * fem,
                                                 ),
                                               ),
                                               FittedBox(
                                                 fit: BoxFit.cover,
                                                 child: Text(
-                                                  '$expenses',
+                                                  '$baseIncome',
                                                   style: SafeGoogleFont(
                                                     'Inter',
                                                     fontSize: 15 * ffem,
                                                     fontWeight: FontWeight.w600,
                                                     height: 1.2125 * ffem / fem,
-                                                    color: Color(0xfffbfbfb),
+                                                    color: const Color(0xfffbfbfb),
                                                   ),
                                                 ),
                                               ),
@@ -356,8 +295,70 @@ class HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                              SizedBox(
+                                height: baseWidth / 4.4,
+                                width: baseWidth / 2.1,
+                                child: Container(
+                                  margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 8 * fem, 1 * fem),
+                                  padding: EdgeInsets.fromLTRB(16 * fem, 17 * fem, 17 * fem, 15 * fem),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xfffd3c4a),
+                                    borderRadius: BorderRadius.circular(28 * fem),
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 11 * fem, 0 * fem),
+                                        width: 48 * fem,
+                                        height: 48 * fem,
+                                        child: Image.asset(
+                                          'assets/home-screen/images/group-223-p4x.png',
+                                          width: 48 * fem,
+                                          height: 48 * fem,
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.fromLTRB(0 * fem, 2 * fem, 0 * fem, 0 * fem),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              // expensesCAC (5:661)
+                                              margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 4 * fem),
+                                              child: Text(
+                                                'Expenses',
+                                                style: SafeGoogleFont(
+                                                  'Inter',
+                                                  fontSize: 14 * ffem,
+                                                  fontWeight: FontWeight.w500,
+                                                  height: 1.2125 * ffem / fem,
+                                                  color: const Color(0xfffbfbfb),
+                                                ),
+                                              ),
+                                            ),
+                                            FittedBox(
+                                              fit: BoxFit.cover,
+                                              child: Text(
+                                                '$expenses',
+                                                style: SafeGoogleFont(
+                                                  'Inter',
+                                                  fontSize: 15 * ffem,
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.2125 * ffem / fem,
+                                                  color: const Color(0xfffbfbfb),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ])
                       ],
@@ -373,82 +374,3 @@ class HomeScreenState extends State<HomeScreen> {
     ));
   }
 }
-
-// Column(
-//   children: [
-//     Container(
-//       margin: const EdgeInsets.only(top: 140, bottom: 60),
-//       child: Center(
-//         child: Column(
-//           children: [
-//             const Text(
-//               "Spent this Month",
-//               style: TextStyle(fontSize: 18, color: Colors.grey),
-//             ),
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: [
-//                 Text(
-//                   "${total.truncate()}", style: const TextStyle(fontSize: 65),
-//                 ),
-//                 Column(
-//                   children: [
-//                     Text(
-//                       ".${(total.remainder(1)*100).toStringAsPrecision(2)}", style: const TextStyle(fontSize: 30),
-//                     ),
-//                     const Text("THB")
-//                   ],
-//                 ),
-//               ],
-//             ),
-//           ],
-//         )
-//       ),
-//     ),
-//     Container(
-//       margin: const EdgeInsets.only(bottom: 60),
-//       child: TextButton.icon(
-//         onPressed: () {
-//           Navigator.pushNamed(context, '/add');
-//         },
-//         style: ButtonStyle(
-//             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-//                 RoundedRectangleBorder(
-//                     borderRadius: BorderRadius.circular(25),
-//                     side: BorderSide(color: Colors.blue)
-//                 )
-//             )
-//         ),
-//         icon: const Icon(Icons.add, size: 25),
-//         label: Text("ADD EXPENSES", style: TextStyle(fontSize: 25),),
-//       ),
-//     ),
-//     FutureBuilder(
-//       future: init(), builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-//         return Expanded(
-//           child: ListView.builder(
-//             shrinkWrap: true,
-//             padding: const EdgeInsets.all(8),
-//             itemCount: entries.length,
-//             itemBuilder: (BuildContext context, int index) {
-//               return ListTile(
-//                   leading: const Icon(Icons.local_pizza),
-//                   trailing: Text(
-//                     "${entries[index]['price']}",
-//                     style: TextStyle(color: Colors.redAccent, fontSize: 20),
-//                   ),
-//                   title: Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       Text("${entries[index]['name']}", style: TextStyle(fontSize: 20),),
-//                       Text("${entries[index]['date']}", style: TextStyle(fontSize: 17, color: Colors.grey),)
-//                   ],
-//                 )
-//               );
-//             },
-//           ),
-//         );
-//       },
-//     ),
-//   ],
-// ),

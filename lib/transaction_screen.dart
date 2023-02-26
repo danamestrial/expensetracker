@@ -36,7 +36,7 @@ class TransactionScreenState extends State<TransactionScreen> {
                         Navigator.pushNamed(context, "/");
                       },
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Text("Transactions",
                       style: SafeGoogleFont(
                         'Inter',
@@ -46,7 +46,7 @@ class TransactionScreenState extends State<TransactionScreen> {
                         color: Colors.black87,
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     IconButton(
                       icon: const Icon(Icons.restart_alt_outlined, color: Colors.deepPurple,),
                       iconSize: 40 * fem,
@@ -84,7 +84,7 @@ class TransactionScreenState extends State<TransactionScreen> {
                                     Align(
                                         child: ElevatedButton(
                                             onPressed: () async {
-                                              reset(clear: true, debug: true).then((value) => {
+                                              reset(clear: true, debug: false).then((value) => {
                                                 Navigator.pushNamed(context, '/')
                                               });
                                             },

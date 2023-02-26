@@ -1,14 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:project_one/add_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:date_time_format/date_time_format.dart';
 import 'utils.dart';
 
 class ListScreen extends StatefulWidget {
   final Function update;
-  ListScreen({required this.update});
+  const ListScreen({super.key, required this.update});
 
   @override
   ListScreenState createState() => ListScreenState();
@@ -27,7 +26,7 @@ class ListScreenState extends State<ListScreen> {
 
   void refresh() {
     setState(() {});
-    this.widget.update();
+    widget.update();
   }
 
   @override
@@ -102,7 +101,7 @@ class ListScreenState extends State<ListScreen> {
                   padding: EdgeInsets.fromLTRB(7.01 * fem, 7 * fem, 14 * fem, 5.88 * fem),
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Color(0x7fd9d9d9),
+                    color: const Color(0x7fd9d9d9),
                     borderRadius: BorderRadius.circular(5 * fem),
                   ),
                   child: Row(
@@ -137,7 +136,7 @@ class ListScreenState extends State<ListScreen> {
                                   fontSize: 22 * ffem,
                                   fontWeight: FontWeight.w400,
                                   height: 1.2125 * ffem / fem,
-                                  color: Color(0xff000000),
+                                  color: const Color(0xff000000),
                                 ),
                               ),
                             ],
@@ -152,7 +151,7 @@ class ListScreenState extends State<ListScreen> {
                                 fontSize: 14 * ffem,
                                 fontWeight: FontWeight.w400,
                                 height: 1 * ffem / fem,
-                                color: Color(0xff757373),
+                                color: const Color(0xff757373),
                               ),
                             ),
                           )
@@ -189,7 +188,7 @@ class ListScreenState extends State<ListScreen> {
                                           fontSize: 14 * ffem,
                                           fontWeight: FontWeight.w400,
                                           height: 1 * ffem / fem,
-                                          color: Color(0xff757373),
+                                          color: const Color(0xff757373),
                                         ),
                                       ),
                                     ))
