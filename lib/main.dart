@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home_screen.dart';
 import 'add_screen.dart';
+import 'transaction_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,8 +15,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/', // we can omit this (as it is by default anyway)
       routes: {
-        '/': (context) => const HomeScreen(),
+        '/': (context) => HomeScreen(),
         '/add': (context) => const AddScreen(),
+        '/list': (context) => const TransactionScreen(),
       },
     );
   }

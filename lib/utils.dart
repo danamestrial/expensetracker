@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:google_fonts/google_fonts.dart';
-
-class MyCustomScrollBehavior extends MaterialScrollBehavior {
-  @override
-  Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-      };
-}
+import 'package:shared_preferences/shared_preferences.dart';
 
 TextStyle SafeGoogleFont(
   String fontFamily, {
@@ -79,4 +72,26 @@ TextStyle SafeGoogleFont(
       decorationThickness: decorationThickness,
     );
   }
+}
+
+Future<bool> reset({bool clear = false, bool debug = false}) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  if (clear) {
+    await prefs.clear();
+  }
+  if (prefs.getStringList('items') == null) {
+    if (debug) {
+      await prefs.setStringList('items', <String>[
+        '{"name":"Food", "description":"Hachiban", "price":"1000", "date":"2023-02-24 16:50:00.000", "is_income":"true"}',
+        '{"name":"Food", "description":"Beef35", "price":"1000.5", "date":"2023-02-24 16:50:00.000", "is_income":"false"}',
+        '{"name":"TheGang", "description":"Salary", "price":"3000", "date":"2023-02-24 16:50:00.000", "is_income":"true"}'
+      ]);
+    } else {
+      await prefs.setStringList('items', <String>[]);
+    }
+  }
+  if (prefs.getDouble('income') == null) {
+    await prefs.setDouble('income', 0);
+  }
+  return true;
 }
